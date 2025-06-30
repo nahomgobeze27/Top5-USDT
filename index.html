@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TOP 5% | Buy USDT with ETB</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --text-color: white;
+      --card-bg: rgba(30, 41, 59, 0.95);
+      --header-bg: rgba(30, 41, 59, 0.95);
+      --highlight: #38bdf8;
+      --glow: gold;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+    }
+    input:invalid, select:invalid {
+      border: 1px solid red;
+    }
+    header {
+      background: var(--header-bg);
+      padding: 2em 1em;
+      text-align: center;
+    }
+    .logo {
+      font-size: 3em;
+      font-weight: bold;
+      color: var(--highlight);
+    }
+    main {
+      max-width: 1200px;
+      margin: 2em auto;
+      padding: 0 2em;
+      display: flex;
+      flex-direction: column;
+      gap: 2em;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 1.5em;
+    }
+    .trader-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+    }
+    .trader {
+      background-color: #1e293b;
+      padding: 1em;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 5px solid var(--highlight);
+      position: relative;
+    }
+    .trader.glow {
+      border: 2px solid var(--glow);
+      box-shadow: 0 0 10px var(--glow);
+    }
+    .badge {
+      background: gold;
+      color: black;
+      font-size: 0.7em;
+      font-weight: bold;
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+      margin-left: 0.5em;
+    }
+    .limited-time {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      background: red;
+      color: white;
+      font-size: 0.65em;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .btn {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 0.6em 1.2em;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    /* Buy Form */
+    #buy-form {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 400px;
+      max-width: 90%;
+      height: 100vh;
+      overflow-y: auto;
+      transition: right 0.5s ease-in-out;
+      z-index: 1000;
+      background: var(--card-bg);
+      padding: 1.5em;
+      box-sizing: border-box;
+    }
+    #buy-form.show {
+      right: 0;
+    }
+    #buy-form button.close-btn {
+      background: transparent;
+      color: var(--highlight);
+      font-size: 1.5em;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 1em;
+    }
+    #buy-form input, #buy-form select {
+      width: 100%;
+      padding: 0.6em;
+      margin-bottom: 1em;
+      border-radius: 5px;
+      border: 1px solid #94a3b8;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+    #converted-price {
+      margin-bottom: 1em;
+      font-weight: bold;
+    }
+    #accountNumber {
+      margin-bottom: 1em;
+      font-style: italic;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 0.7em;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .submit-btn:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+    /* Popup */
+    .popup-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .popup-overlay.show {
+      display: flex;
+    }
+    .popup-box {
+      background: var(--card-bg);
+      padding: 2em;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: center;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">TOP 5%</div>
+    <p>Buy USDT in Ethiopia with trusted sellers — fast, secure, and verified.</p>
+  </header>
+  <main>
+    <!-- Traders first -->
+    <section class="card">
+      <h2>Select a Trusted Trader</h2>
+      <div class="trader-list" id="trader-list"></div>
+    </section>
+    <!-- About last -->
+    <section class="card" id="about-section">
+      <h2>About TOP 5%</h2>
+      <p>
+TOP 5% is Ethiopia’s leading digital USDT marketplace — built by traders, for traders. 💰<br><br>
+
+We connect buyers directly with elite, pre-verified sellers. Every transaction is manually reviewed to ensure 100% security and satisfaction.<br><br>
+
+⚡ Fast transfers. 🛡️ Verified accounts. 🔒 Safe delivery.<br><br>
+
+We support all major payment platforms including CBE, Telebirr, and Empsa. No third parties. No middlemen. Just fast, clean trades from the source.<br><br>
+
+Our "SPECIAL OFFERS" are limited-time deals giving you unbeatable rates — with delivery times under 30 minutes guaranteed.<br><br>
+
+Join the community that’s flipping the game in Ethiopia’s crypto space. Trust TOP 5% — where elite buyers and sellers meet.
+</p>
+
+    </section>
+  </main>
+
+  <!-- Buy Form -->
+  <section id="buy-form" aria-hidden="true">
+    <button class="close-btn" aria-label="Close Buy Form" onclick="closeBuyForm()">×</button>
+    <h2>Buy USDT</h2>
+    <input type="text" id="name" placeholder="Enter your name" required />
+    <input type="number" id="etbAmount" placeholder="Enter ETB amount" min="0" required />
+    <div id="converted-price"></div>
+    <input type="tel" id="phone" placeholder="Phone number (10 digits)" required />
+    <select id="network" required>
+      <option value="">-- Select Network --</option>
+      <option value="TRC20">TRC20</option>
+      <option value="ERC20">ERC20</option>
+    </select>
+    <input type="text" id="wallet" placeholder="Your USDT Wallet Address" required />
+    <select id="paymentMethod" required>
+      <option value="">-- Select Payment Method --</option>
+      <option value="CBE">CBE</option>
+      <option value="Telebirr">Telebirr</option>
+      <option value="Empsa">Empsa</option>
+    </select>
+    <div id="accountNumber" style="display:none;"></div>
+    <input type="file" id="proof" accept="image/*" required />
+    <button class="submit-btn" id="submitOrderBtn" disabled>Submit Order</button>
+  </section>
+
+  <!-- Confirmation Popup -->
+  <div class="popup-overlay" id="confirmationPopup" role="alertdialog" aria-modal="true" aria-labelledby="popupTitle" aria-describedby="popupDesc">
+    <div class="popup-box">
+      <h3 id="popupTitle">✅ Order Submitted!</h3>
+      <p id="popupDesc">Your order has been submitted. We will contact you soon.<br>Your USDT will be delivered in <strong>10–35 minutes</strong>.</p>
+      <p>If your USDT isn’t delivered on time, please contact us on Telegram:<br><strong>@Nfx_28</strong></p>
+      <button class="btn" id="popupOkBtn">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const TELEGRAM_BOT_TOKEN = '7956679172:AAHcOFNvzmIFWOCIseA1rwqGMgs-y1wZNE4';
+    const TELEGRAM_CHAT_ID = 1940324945;
+
+    // Traders data
+    const traders = [
+      {
+        name: 'Nahom',
+        displayName: 'TOP5% SPECIAL OFFER',
+        price: 101,
+        min: 3400,
+        max: 600000,
+        release: 5,
+        isSpecial: true
+      },
+      {
+        name: 'Alazar',
+        displayName: 'TOP5% SPECIAL OFFER',
+        price: 114.6,
+        min: 2800,
+        max: 200000,
+        release: 7,
+        isSpecial: true
+      },
+      {
+        name: 'Mekdes',
+        displayName: 'Trader_Mekdes77',
+        price: 160,
+        min: 1600,
+        max: 8000,
+        release: 10,
+        isSpecial: false
+      },
+      {
+        name: 'Hana',
+        displayName: 'Hana_360',
+        price: 160.9,
+        min: 15000,
+        max: 90000,
+        release: 12,
+        isSpecial: false
+      },
+      {
+        name: 'Abel',
+        displayName: 'Abel_21',
+        price: 161.3,
+        min: 5000,
+        max: 7000,
+        release: 8,
+        isSpecial: false
+      },
+      {
+        name: 'Selam',
+        displayName: 'T_Selam',
+        price: 161,
+        min: 13000,
+        max: 85000,
+        release: 11,
+        isSpecial: false
+        },
+      {
+        name: 'Abel',
+        displayName: '360_ab',
+        price: 161.3,
+        min: 10000,
+        max: 70000,
+        release: 8,
+        isSpecial: false
+        },
+      {
+        name: 'Abel',
+        displayName: 'Kal_33',
+        price: 161.3,
+        min: 1000,
+        max: 7000,
+        release: 8,
+        isSpecial: false
+        },
+      {
+        name: 'Abel',
+        displayName: 'Top5%',
+        price: 150.3,
+        min: 2000,
+        max: 20000,
+        release: 8,
+        isSpecial: false
+      },
+      {
+        name: 'Trader183',
+        displayName: 'Trader183',
+        price: 161.2,
+        min: 14000,
+        max: 70000,
+        release: 8,
+        isSpecial: false        
+      }
+    ];
+
+    let currentTrader = null;
+    let currentRate = 0;
+    let currentMin = 0;
+
+    function renderTraders() {
+      const traderList = document.getElementById('trader-list');
+      // Sort: special offers first
+      const sorted = traders.slice().sort((a, b) => b.isSpecial - a.isSpecial);
+      traderList.innerHTML = sorted.map(trader => {
+        const glowClass = trader.isSpecial ? 'glow' : '';
+        const badge = trader.isSpecial ? '<span class="badge">🔥 Special</span>' : '';
+        const limited = trader.isSpecial ? '<div class="limited-time">⏳ Limited Time!</div>' : '';
+        return `
+          <div class="trader ${glowClass}">
+            ${limited}
+            <div>
+              <strong>${trader.displayName}</strong> ${badge}<br>
+              Price: ${trader.price} ETB/USDT<br>
+              Min: ${trader.min} Br | Max: ${trader.max} Br<br>
+              Release: ${trader.release} min
+            </div>
+            <button class="btn" onclick="openBuyForm('${trader.name}')">Buy Now</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openBuyForm(traderName) {
+      currentTrader = traders.find(t => t.name === traderName);
+      if (!currentTrader) return alert("Trader not found");
+
+      currentRate = currentTrader.price;
+      currentMin = currentTrader.min;
+
+      document.getElementById('buy-form').classList.add('show');
+      document.getElementById('buy-form').setAttribute('aria-hidden', 'false');
+
+      // Clear form fields
+      document.getElementById('name').value = '';
+      document.getElementById('etbAmount').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('network').value = '';
+      document.getElementById('wallet').value = '';
+      document.getElementById('paymentMethod').value = '';
+      document.getElementById('accountNumber').style.display = 'none';
+      document.getElementById('accountNumber').textContent = '';
+      document.getElementById('proof').value = '';
+      document.getElementById('converted-price').textContent = '';
+      document.getElementById('submitOrderBtn').disabled = true;
+    }
+
+    function closeBuyForm() {
+      document.getElementById('buy-form').classList.remove('show');
+      document.getElementById('buy-form').setAttribute('aria-hidden', 'true');
+    }
+
+    function updateConverted() {
+      const etbAmount = parseFloat(document.getElementById('etbAmount').value);
+      const convertedPrice = document.getElementById('converted-price');
+      if (isNaN(etbAmount)) {
+        convertedPrice.textContent = '';
+        return;
+      }
+      if (etbAmount < currentMin) {
+        convertedPrice.style.color = 'red';
+        convertedPrice.textContent = `Amount is below minimum of ${currentMin} ETB`;
+      } else {
+        convertedPrice.style.color = 'white';
+        const usdt = (etbAmount / currentRate).toFixed(2);
+        convertedPrice.textContent = `You’ll receive approx. ${usdt} USDT`;
+      }
+    }
+
+    function updateAccountNumber() {
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      const accountNumber = document.getElementById('accountNumber');
+
+      const accounts = {
+        CBE: '1000698687488',
+        Telebirr: '0912103030',
+        Empsa: 'N/A'
+      };
+
+      if (paymentMethod in accounts) {
+        accountNumber.style.display = 'block';
+        accountNumber.textContent = `${paymentMethod} Account: ${accounts[paymentMethod]}`;
+      } else {
+        accountNumber.style.display = 'none';
+        accountNumber.textContent = '';
+      }
+    }
+
+    function validPhone(phone) {
+      return /^\d{10}$/.test(phone);
+    }
+
+    function validWallet(wallet) {
+      return wallet.length >= 10;
+    }
+
+    function hasValidImage(input) {
+      return input.files && input.files.length > 0 && input.files[0].type.startsWith('image/');
+    }
+
+    function validateForm() {
+      const name = document.getElementById('name').value.trim();
+      const etbAmount = parseFloat(document.getElementById('etbAmount').value);
+      const phone = document.getElementById('phone').value.trim();
+      const network = document.getElementById('network').value;
+      const wallet = document.getElementById('wallet').value.trim();
+      const payment = document.getElementById('paymentMethod').value;
+      const proof = document.getElementById('proof');
+
+      const isValid = 
+        name.length > 0 &&
+        !isNaN(etbAmount) &&
+        etbAmount >= currentMin &&
+        validPhone(phone) &&
+        (network === 'TRC20' || network === 'ERC20') &&
+        validWallet(wallet) &&
+        (payment === 'CBE' || payment === 'Telebirr' || payment === 'Empsa') &&
+        hasValidImage(proof);
+
+      document.getElementById('submitOrderBtn').disabled = !isValid;
+      return isValid;
+    }
+
+    async function submitOrder() {
+      if (!validateForm()) return;
+
+      const name = document.getElementById('name').value.trim();
+      const etbAmount = parseFloat(document.getElementById('etbAmount').value);
+      const phone = document.getElementById('phone').value.trim();
+      const network = document.getElementById('network').value;
+      const wallet = document.getElementById('wallet').value.trim();
+      const payment = document.getElementById('paymentMethod').value;
+      const proofInput = document.getElementById('proof');
+      const usdtAmount = (etbAmount / currentRate).toFixed(2);
+
+      const message = `
+<b>New USDT Order! 🚀</b>
+Trader: ${currentTrader.displayName}
+Buyer Name: ${name}
+Phone: ${phone}
+Amount ETB: ${etbAmount} ETB
+USDT Network: ${network}
+USDT Wallet: ${wallet}
+Payment Method: ${payment}
+Rate: ${currentRate} ETB/USDT
+USDT Amount (approx): ${usdtAmount}
+      `.trim();
+
+      const submitBtn = document.getElementById('submitOrderBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const sendMessageUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const sendPhotoUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+
+        let response = await fetch(sendMessageUrl, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        });
+
+        if (!response.ok) throw new Error('Telegram message send failed');
+
+        if (proofInput.files.length > 0) {
+          const photoFile = proofInput.files[0];
+          const formData = new FormData();
+          formData.append('chat_id', TELEGRAM_CHAT_ID);
+          formData.append('photo', photoFile);
+
+          response = await fetch(sendPhotoUrl, {
+            method: 'POST',
+            body: formData
+          });
+          if (!response.ok) throw new Error('Telegram photo send failed');
+        }
+
+        document.getElementById('confirmationPopup').classList.add('show');
+        closeBuyForm();
+      } catch (err) {
+        alert('Failed to send order. Please try again later.\n' + err.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Order';
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      renderTraders();
+
+      document.querySelector('#buy-form .close-btn').addEventListener('click', closeBuyForm);
+
+      ['name', 'etbAmount', 'phone', 'network', 'wallet', 'paymentMethod', 'proof'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+          if (id === 'etbAmount') updateConverted();
+          if (id === 'paymentMethod') updateAccountNumber();
+          validateForm();
+        });
+      });
+
+      document.getElementById('submitOrderBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        submitOrder();
+      });
+
+      // Popup OK button
+      document.getElementById('popupOkBtn').addEventListener('click', () => {
+        document.getElementById('confirmationPopup').classList.remove('show');
+      });
+    });
+  </script>
+</body>
+</html>
